@@ -41,7 +41,8 @@ public class TransacaoService {
     public void atualizacaoSemAtualizar(){
         var livro = livroRepository
                 .findById(UUID.fromString("daed83b3-65fd-49eb-9400-cbc0af13059d"))
-                .orElse(null);
+                .orElseGet(() -> livroRepository.findAll().stream().findFirst()
+                        .orElseThrow(() -> new IllegalStateException("Nenhum livro encontrado para atualizar")));
 
         livro.setDataPublicacao(LocalDate.of(2024,6,1));
     }
@@ -58,7 +59,7 @@ public class TransacaoService {
 
         // salva o livro
         Livro livro = new Livro();
-        livro.setIsbn("90887-84874");
+        livro.setIsbn("978-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12));
         livro.setPreco(BigDecimal.valueOf(100));
         livro.setGenero(GeneroLivro.FICCAO);
         livro.setTitulo("Teste Livro do Francisco");
